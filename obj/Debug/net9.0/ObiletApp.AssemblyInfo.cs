@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ObiletApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b132a03392c11b9501a95ffee78821bfd373b5ed")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fe7657f0274aa68d9e3f7f3e7cbd22263fa90b6a")]
 [assembly: System.Reflection.AssemblyProductAttribute("ObiletApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ObiletApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
