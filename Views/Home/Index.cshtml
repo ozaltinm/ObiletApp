@@ -1,0 +1,65 @@
+﻿@model ObiletApp.Models.ViewModels.SearchViewModel
+
+@{
+    ViewData["Title"] = "Search";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container mt-5 mb-5">
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <form method="post" asp-controller="Home" asp-action="Index">
+                
+                <!-- Nereden -->
+                <div class="mb-4">
+                    <label asp-for="SelectedOriginId" class="form-label">Nereden</label>
+        <select asp-for="SelectedOriginId" 
+                asp-items="Model.OriginItems" 
+                class="form-select">
+            <option value="">-- Seçiniz --</option>
+        </select>
+                </div>
+
+                <!-- Nereye -->
+                <div class="mb-4">
+                    <label asp-for="SelectedDestinationId" class="form-label">Nereye</label>
+        <select asp-for="SelectedDestinationId" 
+                asp-items="Model.DestinationItems" 
+                class="form-select">
+            <option value="">-- Seçiniz --</option>
+        </select>
+                </div>
+
+                <!-- Tarih -->
+                <div class="mb-4">
+                    <label asp-for="JourneyDate" class="form-label fw-bold text-primary">Tarih</label>
+                    <div class="input-group">
+                        <input asp-for="JourneyDate" type="date" class="form-control" />
+                        <button class="btn btn-outline-secondary" type="button" onclick="setToday()">Bugün</button>
+                        <button class="btn btn-outline-secondary" type="button" onclick="setTomorrow()">Yarın</button>
+                    </div>
+                </div>
+
+                <!-- Gönder -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">Bileti Bul</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setToday() {
+        const inp = document.querySelector('input[name="JourneyDate"]');
+        inp.value = new Date().toISOString().split('T')[0];
+    }
+
+    function setTomorrow() {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const inp = document.querySelector('input[name="JourneyDate"]');
+        inp.value = tomorrow.toISOString().split('T')[0];
+    }
+</script>

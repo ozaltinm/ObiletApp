@@ -1,0 +1,30 @@
+﻿@model ObiletApp.Models.ViewModels.JourneySearchResultViewModel
+
+@{
+  ViewData["Title"] = "Search Results";
+}
+
+<h2>Journeys from @Model.OriginId to @Model.DestinationId on @Model.JourneyDate</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Partner</th>
+      <th>Bus Type</th>
+      <th>Departure</th>
+      <th>Arrival</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach(var j in Model.Journeys) {
+      <tr>
+        <td>@j.PartnerName</td>
+        <td>@j.BusType</td>
+        <td>@j.Departure.ToString("HH:mm")</td>
+        <td>@j.Arrival.ToString("HH:mm")</td>
+        <td>@j.InternetPrice.ToString("C")</td>
+      </tr>
+    }
+  </tbody>
+</table>
