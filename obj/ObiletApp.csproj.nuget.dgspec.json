@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\ebru_\\Documents\\ObiletApp\\ObiletApp.csproj": {}
+    "C:\\Users\\ebru_\\Documents\\ObiletApp\\ObiletApp.csproj": {}
   },
   "projects": {
-    "c:\\Users\\ebru_\\Documents\\ObiletApp\\ObiletApp.csproj": {
+    "C:\\Users\\ebru_\\Documents\\ObiletApp\\ObiletApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\ebru_\\Documents\\ObiletApp\\ObiletApp.csproj",
+        "projectUniqueName": "C:\\Users\\ebru_\\Documents\\ObiletApp\\ObiletApp.csproj",
         "projectName": "ObiletApp",
-        "projectPath": "c:\\Users\\ebru_\\Documents\\ObiletApp\\ObiletApp.csproj",
+        "projectPath": "C:\\Users\\ebru_\\Documents\\ObiletApp\\ObiletApp.csproj",
         "packagesPath": "C:\\Users\\ebru_\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\ebru_\\Documents\\ObiletApp\\obj\\",
+        "outputPath": "C:\\Users\\ebru_\\Documents\\ObiletApp\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ebru_\\AppData\\Roaming\\NuGet\\NuGet.Config"

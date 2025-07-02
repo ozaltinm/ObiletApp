@@ -24,6 +24,7 @@ public class JourneyResponseData
     [JsonPropertyName("available-seats")]
     public int? AvailableSeats { get; set; }
 
+    [JsonPropertyName("journey")]
     public Journey? Journey { get; set; }
     public List<JourneyFeature>? Features { get; set; }
 

@@ -83,7 +83,7 @@ public class ObiletApiService : IObiletApiService
         var responseJson = await response.Content.ReadAsStringAsync();
         var journeys = JsonSerializer.Deserialize<JourneyResponseDTO>(responseJson);
 
-        return journeys?.Data ?? new List<JourneyResponseData>();
+        return journeys?.Data ?? new List<JourneyResponseData>(); 
     }
 
 }

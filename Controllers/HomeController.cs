@@ -41,8 +41,8 @@ public class HomeController : Controller
             // if there is no location, return empty model
             var emptyVm = new SearchViewModel
             {
-                SelectedOriginId = null,
-                SelectedDestinationId = null,
+                SelectedOrigin = null,
+                SelectedDestination = null,
                 JourneyDate = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd"),
                 Origins = allLocations,
                 Destinations = allLocations
@@ -51,14 +51,14 @@ public class HomeController : Controller
         }
 
         // default values
-        var originId = allLocations.FirstOrDefault()?.Id;
-        var destinationId = allLocations.Skip(2).FirstOrDefault()?.Id;
+        var origin = allLocations.FirstOrDefault();
+        var destination = allLocations.Skip(2).FirstOrDefault();
 
         // ViewModel basic values
         var vm = new SearchViewModel
         {
-            SelectedOriginId = originId,
-            SelectedDestinationId = destinationId,
+            SelectedOrigin = origin,
+            SelectedDestination = destination,
             JourneyDate = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd"),
             Origins = allLocations,
             Destinations = allLocations
@@ -70,7 +70,7 @@ public class HomeController : Controller
             {
                 Value = o.Id.ToString(),
                 Text = o.Name,
-                Selected = o.Id == vm.SelectedOriginId
+                Selected = o.Id == vm.SelectedOrigin?.Id
             });
 
         vm.DestinationItems = allLocations
@@ -78,7 +78,7 @@ public class HomeController : Controller
             {
                 Value = o.Id.ToString(),
                 Text = o.Name,
-                Selected = o.Id == vm.SelectedDestinationId
+                Selected = o.Id == vm.SelectedDestination?.Id
             });
 
         return View(vm);
@@ -87,17 +87,43 @@ public class HomeController : Controller
     [HttpPost]
     public async Task<IActionResult> Index(SearchViewModel model)
     {
+    /*    // 1) Server-side base model state control
+        if (!ModelState.IsValid)
+        {
+            await RepopulateSelectLists(model);
+            return View(model);
+        }
+
+        // 2) Origin is equal to Destination control
+        if (model.SelectedOrigin?.Name == model.SelectedDestination?.Name)
+        {
+            ModelState.AddModelError(string.Empty, "Kalkış ve varış noktaları aynı olamaz.");
+            await RepopulateSelectLists(model);
+            return View(model);
+        }
+
+        // 3) Date control: older dates can not be selected
+        if (DateTime.TryParse(model.JourneyDate, out var jd) && jd.Date < DateTime.Today)
+        {
+            ModelState.AddModelError(nameof(model.JourneyDate), "Geçmiş bir tarih seçilemez.");
+            await RepopulateSelectLists(model);
+            return View(model);
+        }
+*/
+        // 4) All validations passed → API call and view mapping
         // get session values
         var (sid, did) = await _sessionManager.GetSessionAsync();
 
-        // fill DTO
-        var req = new JourneyRequestDTO {
+        // DTO mapping
+        var req = new JourneyRequestDTO
+        {
             DeviceSession = new DeviceSession { SessionId = sid, DeviceId = did },
-            Date          = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"),
-            Language      = "tr-TR",
-            Data          = new BusJourneyData {
-                OriginId      = model.SelectedOriginId,
-                DestinationId = model.SelectedDestinationId,
+            Date = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"),
+            Language = "tr-TR",
+            Data = new BusJourneyData
+            {
+                OriginId = model.SelectedOrigin?.Id,
+                DestinationId = model.SelectedDestination?.Id,
                 DepartureDate = model.JourneyDate
             }
         };
@@ -106,27 +132,49 @@ public class HomeController : Controller
         var resp = await _obiletApiService.GetJourneys(req);
 
         // ViewModel mapping
-        var vm = new JourneySearchResultViewModel {
-            OriginId       = model.SelectedOriginId,
-            DestinationId  = model.SelectedDestinationId,
-            JourneyDate    = model.JourneyDate
+        var vm = new JourneySearchResultViewModel
+        {
+            Origin = model.SelectedOrigin,
+            Destination = model.SelectedDestination,
+            JourneyDate = model.JourneyDate
         };
 
         if (resp != null)
         {
-            vm.Journeys = resp.Select(j => new JourneyViewModel {
-                Id                  = j.Id,
-                PartnerName         = j.PartnerName ?? "",
-                BusType             = j.Journey?.BusName ?? j.BusType ?? "",
-                Departure           = j.Journey?.Departure ?? DateTime.MinValue,
-                Arrival             = j.Journey?.Arrival   ?? DateTime.MinValue,
-                InternetPrice       = j.Journey?.InternetPrice ?? 0,
-                OriginLocation      = j.OriginLocation      ?? "",
-                DestinationLocation = j.DestinationLocation ?? ""
+            vm.Journeys = resp.Select(j => new JourneyViewModel
+            {
+                Id = j.Id,
+                Departure = j.Journey?.Departure.ToString("HH:mm") ?? "00:00",
+                Arrival = j.Journey?.Arrival.ToString("HH:mm") ?? "00:00",
+                InternetPrice = j.Journey?.InternetPrice ?? "O TL",
+                OriginLocation = j.Journey?.Origin ?? "",
+                DestinationLocation = j.Journey?.Destination ?? ""
             }).ToList();
         }
 
-         return View("Results", vm);
+        return View("Results", vm);
     }
+    
+    private async Task RepopulateSelectLists(SearchViewModel model)
+    {
+        var (sid, did) = await _sessionManager.GetSessionAsync();
+        var resp = await _obiletApiService.GetBusLocations(new BusLocationRequestDTO {
+            DeviceSession = new DeviceSession { SessionId = sid, DeviceId = did },
+            Date = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"),
+            Language = "tr-TR"
+        });
+        var all = resp.Data?.ToList() ?? new List<BusLocationData>();
+
+        model.OriginItems = all.Select(o => new SelectListItem {
+            Value = o.Id.ToString(), Text = o.Name,
+            Selected = (model.SelectedOrigin?.Id == o.Id)
+        });
+
+        model.DestinationItems = all.Select(o => new SelectListItem {
+            Value = o.Id.ToString(), Text = o.Name,
+            Selected = (model.SelectedDestination?.Id == o.Id)
+        });
+    }
+
 
 }

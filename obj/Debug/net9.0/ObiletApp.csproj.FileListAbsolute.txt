@@ -93,3 +93,4 @@ C:\Users\ebru_\Documents\ObiletApp\obj\Debug\net9.0\refint\ObiletApp.dll
 C:\Users\ebru_\Documents\ObiletApp\obj\Debug\net9.0\ObiletApp.pdb
 C:\Users\ebru_\Documents\ObiletApp\obj\Debug\net9.0\ObiletApp.genruntimeconfig.cache
 C:\Users\ebru_\Documents\ObiletApp\obj\Debug\net9.0\ref\ObiletApp.dll
+C:\Users\ebru_\Documents\ObiletApp\obj\Debug\net9.0\ObiletApp.sourcelink.json
